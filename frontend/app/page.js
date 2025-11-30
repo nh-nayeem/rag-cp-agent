@@ -16,15 +16,40 @@ export default function Home() {
 
     const userMessage = { role: 'user', content: input }
     setMessages(prev => [...prev, userMessage])
+    const currentInput = input
     setInput('')
     setIsLoading(true)
 
-    // Simulate API call delay
-    setTimeout(() => {
-      const assistantMessage = { role: 'assistant', content: "I don't know nothing." }
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/ask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: currentInput }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to get response')
+      }
+
+      const data = await response.json()
+      const assistantMessage = { 
+        role: 'assistant', 
+        content: data.answer,
+        sources: data.sources || []
+      }
       setMessages(prev => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Error:', error)
+      const errorMessage = { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an error. Please make sure the backend is running.'
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   return (
@@ -58,6 +83,21 @@ export default function Home() {
               }`}
             >
               <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+              {message.sources && message.sources.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-xs font-semibold text-gray-600 mb-2">Sources:</p>
+                  <div className="space-y-1">
+                    {message.sources.map((source, idx) => (
+                      <div key={idx} className="text-xs text-gray-500">
+                        <span className="font-medium">Score: {source.score.toFixed(3)}</span>
+                        {source.payload.title && (
+                          <span> - {source.payload.title}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {message.role === 'user' && (
