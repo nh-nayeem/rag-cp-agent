@@ -21,7 +21,7 @@ export default function Home() {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/ask`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export default function Home() {
       console.error('Error:', error)
       const errorMessage = { 
         role: 'assistant', 
-        content: 'Sorry, I encountered an error. Please make sure the backend is running.'
+        content: 'Sorry, I encountered an error. Try again later.'
       }
       setMessages(prev => [...prev, errorMessage])
     } finally {
