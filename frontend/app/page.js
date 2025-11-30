@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Bot, User } from 'lucide-react'
+import { Send, Bot, User, Github } from 'lucide-react'
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -56,8 +56,23 @@ export default function Home() {
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 p-4">
-        <h1 className="text-xl font-semibold text-gray-800">RAG CP Agent</h1>
-        <p className="text-sm text-gray-600">Competitive Programming Assistant</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-800">RAG CP Agent</h1>
+            <p className="text-sm text-gray-600">Competitive Programming Assistant</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Developed by nh_nayeem</span>
+            <a 
+              href="https://github.com/nh-nayeem" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              <Github className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
       </div>
 
       {/* Messages */}
